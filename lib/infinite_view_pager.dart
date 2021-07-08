@@ -9,7 +9,7 @@ class InfiniteViewPager extends StatefulWidget {
   final IndexedWidgetBuilder pageBuilder;
 
   /// Called each time page changes with an integer representing direction (1 – forward, -1 – backward)
-  final Function(int) onPageChanged;
+  final Function(int)? onPageChanged;
 
   /// See [PageView.dragStartBehavior]
   final DragStartBehavior dragStartBehavior;
@@ -18,22 +18,28 @@ class InfiniteViewPager extends StatefulWidget {
   final bool pageSnapping;
 
   /// See [PageView.physics]
-  final ScrollPhysics physics;
+  final ScrollPhysics? physics;
 
   /// See [PageView.reverse]
   final bool reverse;
+
+  final int? initialIndex;
+
+  final PageController? controller;
 
   /// See [PagView.scrollDirection]
   final Axis scrollDirection;
 
   const InfiniteViewPager({
-    Key key,
-    @required this.pageBuilder,
+    Key? key,
+    required this.pageBuilder,
     this.onPageChanged,
     this.dragStartBehavior = DragStartBehavior.start,
     this.pageSnapping = true,
     this.physics,
     this.reverse = false,
+    this.initialIndex,
+    this.controller,
     this.scrollDirection = Axis.horizontal,
   }) : super(key: key);
 
@@ -42,12 +48,13 @@ class InfiniteViewPager extends StatefulWidget {
 }
 
 class _InfiniteViewPagerState extends State<InfiniteViewPager> {
-  PageController controller;
-  List<Widget> _children = new List<Widget>(3);
+  late PageController controller;
+  var _children = <Widget>[];
 
   @override
   void initState() {
-    controller = new PageController(initialPage: 1);
+    controller = widget.controller ??
+        PageController(initialPage: widget.initialIndex ?? 1);
     controller.addListener(_onScroll);
 
     super.initState();
@@ -64,8 +71,8 @@ class _InfiniteViewPagerState extends State<InfiniteViewPager> {
       return;
     }
 
-    if (controller.page.toInt() == controller.page) {
-      final direction = controller.page - 1;
+    if (controller.page!.toInt() == controller.page) {
+      final direction = controller.page! - 1;
 
       setState(() {
         _buildChildren();
@@ -95,7 +102,7 @@ class _InfiniteViewPagerState extends State<InfiniteViewPager> {
     }
 
     return PageView.builder(
-      controller: controller,
+      controller: widget.controller ?? controller,
       dragStartBehavior: widget.dragStartBehavior,
       itemBuilder: (context, index) {
         if (_children.first == null) {
