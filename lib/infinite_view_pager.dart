@@ -53,6 +53,7 @@ class _InfiniteViewPagerState extends State<InfiniteViewPager> {
 
   @override
   void initState() {
+    _buildChildren();
     controller = widget.controller ??
         PageController(initialPage: widget.initialIndex ?? 1);
     controller.addListener(_onScroll);
