@@ -62,8 +62,9 @@ class _InfiniteViewPagerState extends State<InfiniteViewPager> {
   }
 
   _buildChildren() {
+    _children.clear();
     for (int i = 0; i < 3; i++) {
-      _children[i] = widget.pageBuilder(context, i - 1);
+      _children.add(widget.pageBuilder(context, i - 1));
     }
   }
 
